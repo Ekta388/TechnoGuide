@@ -16,13 +16,18 @@ app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
 // MongoDB Connection
+if (!process.env.MONGODB_URI) {
+  console.error('❌ ERROR: MONGODB_URI is not defined in environment variables!');
+}
+
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
-  console.log('MongoDB connected successfully');
+  console.log('✅ MongoDB connected successfully');
 }).catch((error) => {
-  console.error('MongoDB connection error:', error);
+  console.error('❌ MongoDB connection error:', error.message);
+  console.error('👉 Make sure you have allowed IP 0.0.0.0/0 in MongoDB Atlas Network Access');
 });
 
 // Import routes
