@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #0f172a;
+  --surface-color: #f8fafc;
+  --border-color: #e2e8f0;
+}
+
+.dark {
+  --bg-color: #020617;
+  --text-color: #f8fafc;
+  --surface-color: #0f172a;
+  --border-color: #1e293b;
+}
+
+body {
+  @apply antialiased transition-colors duration-300;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-md bg-white/70 dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/50 rounded-2xl shadow-xl transition-all duration-300;
+  }
+  
+  .glass-sidebar {
+    @apply backdrop-blur-lg bg-white/80 dark:bg-slate-950/80 border-r border-slate-200/50 dark:border-slate-800/50;
+  }
+  
+  .glass-navbar {
+    @apply backdrop-blur-md bg-white/60 dark:bg-slate-950/60 border-b border-slate-200/50 dark:border-slate-800/50;
+  }
+  
+  .btn-primary {
+    @apply bg-tg-orange-600 hover:bg-tg-orange-500 text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-tg-orange-600/20;
+  }
+  
+  .input-field {
+    @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-tg-orange-500/50 transition-all duration-300 text-slate-900 dark:text-slate-100;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300/50 dark:bg-slate-700/50 rounded-full hover:bg-slate-400 dark:hover:bg-slate-600;
+}

@@ -1,0 +1,125 @@
+/* Design.css - Global design additions
+   Added without modifying existing files. Place this in public/ and include it in your index.html:
+   <link rel="stylesheet" href="%PUBLIC_URL%/design.css">
+*/
+
+
+:root{
+  --primary:#e71fc6;
+  --primary-2:#ffd166;
+  --accent:#7b2ff7;
+  --bg-gradient: linear-gradient(135deg, #c05457 0%, #de8ee9 50%, #e68ecd 100%);
+  --card-bg: rgba(255,255,255,0.9);
+  --glass: rgba(255,255,255,0.6);
+  --muted: #6b7280;
+}
+
+/* Reset */
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{
+  margin:0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg-gradient);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  color:#111827;
+}
+
+/* Utility classes used in App.jsx (subset) */
+.container{max-width:1100px;margin:0 auto;padding:1rem}
+.mx-auto{margin-left:auto;margin-right:auto}
+.w-full{width:100%}
+.flex{display:flex}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.justify-center{justify-content:center}
+.flex-col{flex-direction:column}
+.gap-4{gap:1rem}
+.gap-6{gap:1.5rem}
+.p-4{padding:1rem}
+.p-6{padding:1.5rem}
+.p-8{padding:2rem}
+.mb-4{margin-bottom:1rem}
+.mb-6{margin-bottom:1.5rem}
+.mt-6{margin-top:1.5rem}
+.mt-10{margin-top:2.5rem}
+.rounded{border-radius:0.5rem}
+.rounded-lg{border-radius:0.75rem}
+.rounded-xl{border-radius:1rem}
+.shadow{box-shadow:0 6px 18px rgba(0,0,0,0.12)}
+.shadow-2xl{box-shadow:0 18px 50px rgba(0,0,0,0.18)}
+.text-white{color:rgb(12, 3, 3)}
+.text-sm{font-size:0.9rem}
+.text-lg{font-size:1.125rem}
+.text-xl{font-size:1.25rem}
+.text-2xl{font-size:1.5rem}
+.text-3xl{font-size:1.875rem}
+.font-bold{font-weight:700}
+.font-extrabold{font-weight:800}
+.leading-tight{line-height:1.1}
+.tracking-tight{letter-spacing:-0.01em}
+.bg-white{background:var(--card-bg)}
+.bg-indigo-50{background:rgba(123, 47, 247,0.06)}
+.border{border:1px solid rgba(0,0,0,0.06)}
+.border-b{border-bottom:1px solid rgba(0,0,0,0.06)}
+.border-gray-300{border-color:#d1d5db}
+.text-gray-500{color:#6b7280}
+.text-indigo-700{color:#5b21b6}
+.text-indigo-500{color:#7c3aed}
+.text-indigo-900{color:#3b0764}
+.text-red-500{color:#ef4444}
+.bg-red-100{background:#fee2e2}
+.bg-green-100{background:#dcfce7}
+.text-green-700{color:#047857}
+
+/* Buttons */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:0.6rem;
+  padding:0.65rem 1rem;
+  border-radius:0.6rem;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 8px 30px rgba(123,47,247,0.18)}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.18);color:white}
+
+/* Cards */
+.hero{
+  padding:2.5rem;
+  border-radius:1.2rem;
+  color:white;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  background: linear-gradient(135deg, rgba(123,47,247,0.85), rgba(255,107,107,0.9));
+}
+
+/* Form elements */
+.input{
+  width:100%;
+  padding:0.65rem 0.8rem;
+  border-radius:0.6rem;
+  border:1px solid rgba(0,0,0,0.08);
+  background:rgba(255,255,255,0.9);
+  font-size:0.95rem;
+}
+.select{appearance:none;padding-right:2.2rem}
+
+/* Small helpers */
+.badge{
+  display:inline-block;padding:0.3rem 0.6rem;border-radius:999px;font-weight:700;font-size:0.8rem;
+  background:linear-gradient(90deg,var(--primary-2),var(--accent));color:#1f1f1f;
+}
+.kpi{display:flex;flex-direction:column;gap:0.2rem}
+.kpi .value{font-size:1.6rem;font-weight:800}
+.kpi .label{font-size:0.85rem;color:var(--muted)}
+
+/* Responsive */
+@media (max-width:900px){
+  .container{padding:1rem}
+  .hero{padding:1.25rem}
+}

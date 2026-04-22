@@ -1,0 +1,14 @@
+node_modules
+.env
+.env.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.wwebjs_auth
+.wwebjs_cache
+.git
+.gitignore
+Dockerfile
+.dockerignore
+uploads/*
+!uploads/.gitkeep
