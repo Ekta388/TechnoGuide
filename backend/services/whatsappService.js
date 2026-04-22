@@ -1,6 +1,8 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const QRCodeImage = require('qrcode');
+const fs = require('fs');
+const path = require('path');
 
 class WhatsAppService {
   constructor() {
@@ -11,6 +13,7 @@ class WhatsAppService {
       puppeteer: {
         executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
         headless: true,
+        pipe: true, // Improved communication stability
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -23,9 +26,11 @@ class WhatsAppService {
           '--no-first-run',
           '--single-process',
           '--disable-accelerated-2d-canvas',
-          '--js-flags="--max-old-space-size=384"'
+          '--js-flags="--max-old-space-size=256"', // Slightly lower JS memory to leave room for browser processes
+          '--disable-web-security',
+          '--autoplay-policy=no-user-gesture-required'
         ],
-        timeout: 90000
+        timeout: 120000 // Increased timeout for heavy loading
       },
       webVersionCache: {
         type: 'remote',
@@ -81,10 +86,24 @@ class WhatsAppService {
       console.error(`[WhatsApp] Initialization attempt ${retryCount + 1} failed:`, err.message);
       
       if (retryCount < maxRetries) {
-        console.log(`[WhatsApp] Retrying in 10 seconds...`);
-        setTimeout(() => this.initialize(retryCount + 1), 10000);
+        console.log(`[WhatsApp] Retrying in 15 seconds...`);
+        setTimeout(() => this.initialize(retryCount + 1), 15000);
       } else {
-        console.error('[WhatsApp] Max initialization retries reached. Please check server resources or clear .wwebjs_auth folder.');
+        console.error('[WhatsApp] Persistent failure. Attempting Self-Healing (deleting session folder)...');
+        this.clearSession();
+      }
+    }
+  }
+
+  clearSession() {
+    const sessionPath = path.join(process.cwd(), '.wwebjs_auth');
+    if (fs.existsSync(sessionPath)) {
+      try {
+        fs.rmSync(sessionPath, { recursive: true, force: true });
+        console.log('✅ [WhatsApp] Session folder cleared. Restarting initialization...');
+        this.initialize(0);
+      } catch (err) {
+        console.error('❌ [WhatsApp] Failed to clear session folder:', err.message);
       }
     }
   }
