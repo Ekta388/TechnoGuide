@@ -13,7 +13,6 @@ class WhatsAppService {
       puppeteer: {
         executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
         headless: true,
-        pipe: true, // Improved communication stability
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -22,20 +21,16 @@ class WhatsAppService {
           '--disable-extensions',
           '--disable-features=IsolateOrigins,site-per-process',
           '--disable-site-isolation-trials',
-          '--no-zygote',
           '--no-first-run',
-          '--single-process',
+          '--no-zygote',
           '--disable-accelerated-2d-canvas',
-          '--js-flags="--max-old-space-size=256"', // Slightly lower JS memory to leave room for browser processes
           '--disable-web-security',
-          '--autoplay-policy=no-user-gesture-required'
+          '--autoplay-policy=no-user-gesture-required',
+          `--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36`
         ],
-        timeout: 120000 // Increased timeout for heavy loading
-      },
-      webVersionCache: {
-        type: 'remote',
-        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1012590139.html',
+        timeout: 0 // Disable timeout for local/heavy loads
       }
+      // webVersionCache removed to prevent incompatibility loops
     });
 
     this.client.on('qr', async (qr) => {
