@@ -1,4 +1,9 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+let baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Ensure the URL ends with /api for production stability
+if (baseUrl && !baseUrl.endsWith('/api')) {
+  baseUrl = baseUrl.endsWith('/') ? `${baseUrl}api` : `${baseUrl}/api`;
+}
+const API_BASE_URL = baseUrl;
 
 class APIService {
   constructor() {
