@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Trash2, Edit2, Users } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Plus, Search, Trash2, Edit2, Users, Building2, Mail, Phone, MapPin, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
+import Modal from '../components/Modal';
 
 const Clients = () => {
   const [clients, setClients] = useState([]);

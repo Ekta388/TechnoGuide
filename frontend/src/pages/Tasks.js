@@ -205,13 +205,11 @@ const Tasks = () => {
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       await api.updateTaskStatus(taskId, newStatus);
-      fetchTasks();
+      fetchData();
     } catch (err) {
       console.error('Error updating task status:', err);
     }
   };
-
-  const fetchTasks = async () => {
 
   const handleSendNotification = async (taskId) => {
     try {

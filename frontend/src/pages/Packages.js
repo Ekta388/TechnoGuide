@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { 
   Plus, Edit2, Trash2, Search, 
   Package, Calendar, CheckCircle2, AlertCircle, 
@@ -23,6 +24,22 @@ const Packages = () => {
   const [assignEndDate, setAssignEndDate] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    type: [],
+    platforms: [],
+    amount: '',
+    duration: 3,
+    durationUnit: 'months',
+    deliverables: [],
+    features: [],
+    budget: 0,
+    startDate: '',
+    endDate: '',
+    newDeliverable: { name: '', monthlyCount: '' }
+  });
 
   // Delivery Update State
   const [showDeliveryModal, setShowDeliveryModal] = useState(false);
