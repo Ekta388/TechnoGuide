@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
-import { Package, Calendar } from 'lucide-react';
+import { Package, Calendar, Printer } from 'lucide-react';
 
 function Reports() {
   const [clients, setClients] = useState([]);
