@@ -50,6 +50,22 @@ app.use('/api/assignments', assignmentRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/notifications', notificationRoutes);
 
+// Root Route - Welcome Message
+app.get('/', (req, res) => {
+  res.send(`
+    <div style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px; color: #334155;">
+      <h1 style="color: #2563eb;">🚀 TechnoGuide API is Running</h1>
+      <p>The backend service is live and connected to MongoDB.</p>
+      <div style="margin-top: 30px;">
+        <a href="/api/whatsapp/status" style="display: inline-block; padding: 10px 20px; background-color: #16a34a; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">📱 Scan WhatsApp QR Code</a>
+      </div>
+      <p style="margin-top: 20px; font-size: 14px; color: #64748b;">
+        View Health: <a href="/api/health" style="color: #2563eb;">/api/health</a>
+      </p>
+    </div>
+  `);
+});
+
 // WhatsApp Web View Route (for Production Panel scanning)
 app.get('/api/whatsapp/status', (req, res) => {
   const whatsappService = require('./services/whatsappService');
