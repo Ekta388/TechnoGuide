@@ -9,7 +9,7 @@ class EmailService {
     this.user = 'ektarana388@gmail.com';
     this.pass = 'qwlv ohhw ziuz yhjw';
     this.appName = 'TechnoGuide';
-    
+
     this.transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
