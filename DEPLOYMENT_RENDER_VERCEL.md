@@ -32,7 +32,7 @@ This guide provides step-by-step instructions for deploying your TechnoGuide pro
     - **Root Directory**: `backend`
     - **Language**: `Docker` (Render will automatically detect the `Dockerfile`).
 5.  **Service Plan**:
-    - Select a plan with **at least 1GB RAM** (e.g., Starter). The free tier (512MB) may crash when starting the WhatsApp browser.
+    - Select the **Free** instance type ($0/month). I have optimized the code (extreme low-memory mode) to fit within the 512MB RAM limit.
 6.  **Environment Variables**:
     - Add the following in **Advanced** → **Add Environment Variable**:
         - `MONGODB_URI`: Your MongoDB Atlas connection string.
@@ -76,5 +76,6 @@ This guide provides step-by-step instructions for deploying your TechnoGuide pro
 
 ## 5. Troubleshooting Cloud WhatsApp
 
-- **Initialization Failure**: If the log shows "Navigating frame was detached", it usually means the service ran out of memory. Try upgrading to a plan with more RAM.
+- **Initialization Failure**: If the log shows "Navigating frame was detached", it usually means the service is still booting up (the Free Tier CPU is slow). I have increased the timeout to 90 seconds to handle this.
+- **Out of Memory**: The Free tier has 512MB. The code is now locked to a 384MB limit for both Node and Chromium to ensure stability.
 - **Port Matching**: Ensure Render's Port is set to `5000` or matched to your code.

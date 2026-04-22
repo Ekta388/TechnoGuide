@@ -20,8 +20,12 @@ class WhatsAppService {
           '--disable-features=IsolateOrigins,site-per-process',
           '--disable-site-isolation-trials',
           '--no-zygote',
-          '--no-first-run'
-        ]
+          '--no-first-run',
+          '--single-process',
+          '--disable-accelerated-2d-canvas',
+          '--js-flags="--max-old-space-size=384"'
+        ],
+        timeout: 90000
       },
       webVersionCache: {
         type: 'remote',
