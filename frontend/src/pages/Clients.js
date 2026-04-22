@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Search, Filter, Users, Mail, Phone, Building2, MapPin } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Search, Trash2, Edit2, Users } from 'lucide-react';
+import { motion } from 'framer-motion';
 import api from '../services/api';
-import Modal from '../components/Modal';
 
 const Clients = () => {
   const [clients, setClients] = useState([]);
@@ -26,6 +25,7 @@ const Clients = () => {
 
   useEffect(() => {
     fetchClients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchClients = async () => {

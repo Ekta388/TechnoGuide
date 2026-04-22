@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Plus, Edit2, Trash2, Search, Filter,
-  Package, Calendar, CheckCircle2, AlertCircle,
-  Clock, X, ChevronRight, Layers, CreditCard,
-  Target, TrendingUp, Zap, Users, History, Star,
-  Bell, MessageSquare
+import { 
+  Plus, Edit2, Trash2, Search, 
+  Package, Calendar, CheckCircle2, AlertCircle, 
+  Clock, X, ChevronRight, Layers, CreditCard, 
+  Target, TrendingUp, Zap, Users, History, Star, 
+  Bell, MessageSquare 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
@@ -37,7 +36,6 @@ const Packages = () => {
     const end = new Date(endDate);
     end.setHours(0, 0, 0, 0);
 
-    // Calculate difference in days
     const diffTime = end - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -51,37 +49,61 @@ const Packages = () => {
     const phone = (client?.phone || '').replace(/\+/g, '').replace(/\s/g, '');
 
     if (!phone) {
-      alert('Client phone number not available for tactical alert.');
+      alert('Client phone number not available.');
       return;
     }
 
-    const expiryDate = new Date(endDate).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
+    const expiryDate = new Date(endDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     const serviceTier = pkg?.name || 'Assigned Package';
-
-    const message = `Hello *${client.name}*, this is TechnoGuide. 👋\n\nYour *${serviceTier}* package is approaching its expiry date on *${expiryDate}*. \n\nPlease let us know if you would like to proceed with a renewal of your current service tier to ensure uninterrupted service.\n\nRegards,\n*TechnoGuide Team*`;
-
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+    const message = `Hello *${client.name}*, this is TechnoGuide. 👋\n\nYour *${serviceTier}* package is approaching its expiry date on *${expiryDate}*. \n\nPlease let us know if you would like to proceed with a renewal.`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
   };
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    type: [],
-    platforms: [],
-    amount: '',
-    duration: 3,
-    durationUnit: 'months',
-    deliverables: [],
-    features: [],
-    budget: 0,
-    startDate: '',
-    endDate: '',
-    newDeliverable: { name: '', monthlyCount: '' }
-  });
+
+  const openDeliveryModal = (assignment) => {
+    setActiveAssignment(assignment);
+    const initialUpdates = {};
+    (assignment.deliverablesProgress || []).forEach(d => {
+      initialUpdates[d.name] = d.completedCount || 0;
+    });
+    setDeliveryUpdates(initialUpdates);
+    setShowDeliveryModal(true);
+  };
+
+  const handleDeliverySubmit = async (deliverableName) => {
+    try {
+      const completedCount = deliveryUpdates[deliverableName];
+      const data = await api.updateAssignmentDelivery(activeAssignment._id, { deliverableName, completedCount });
+      alert('Progress updated!');
+      setAssignments(prev => prev.map(a => a._id === activeAssignment._id ? (data.assignment || data) : a));
+      setActiveAssignment(data.assignment || data);
+      fetchData();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const addDeliverable = () => {
+    const { name, monthlyCount } = formData.newDeliverable;
+    if (!name.trim() || !monthlyCount) return;
+    const total = Number(monthlyCount) * Number(formData.duration);
+    setFormData({
+      ...formData,
+      deliverables: [...formData.deliverables, { name: name.trim(), monthlyCount: Number(monthlyCount), total }],
+      newDeliverable: { name: '', monthlyCount: '' }
+    });
+  };
+
+  const removeDeliverable = (index) => {
+    setFormData({ ...formData, deliverables: formData.deliverables.filter((_, i) => i !== index) });
+  };
+
+  const updateDeliverableTotals = (newDuration) => {
+    setFormData({
+      ...formData,
+      duration: newDuration,
+      deliverables: formData.deliverables.map(d => ({ ...d, total: d.monthlyCount * newDuration }))
+    });
+  };
 
   useEffect(() => {
     fetchData();
@@ -151,91 +173,11 @@ const Packages = () => {
     setShowModal(true);
   };
 
-  const openDeliveryModal = (assignment) => {
-    setActiveAssignment(assignment);
-    const initialUpdates = {};
-    (assignment.deliverablesProgress || []).forEach(d => {
-      initialUpdates[d.name] = d.completedCount || 0;
-    });
-    setDeliveryUpdates(initialUpdates);
-    setShowDeliveryModal(true);
-  };
-
-  const handleDeliverySubmit = async (deliverableName) => {
-    try {
-      const completedCount = deliveryUpdates[deliverableName];
-      const data = await api.updateAssignmentDelivery(activeAssignment._id, {
-        deliverableName,
-        completedCount
-      });
-      alert('Delivery progress updated successfully!');
-
-      // Update local state assignments array
-      setAssignments(prev => prev.map(a => a._id === activeAssignment._id ? (data.assignment || data) : a));
-
-      // Update active assignment so modal reflects changes instantly
-      setActiveAssignment(data.assignment || data);
-
-      // Refresh all data
-      fetchData();
-
-    } catch (error) {
-      console.error('Error updating delivery:', error);
-      alert('Error updating delivery progress');
-    }
-  };
-
   const calculateEndDate = (startDate, durationMonths) => {
     const start = new Date(startDate);
     const end = new Date(start);
     end.setMonth(end.getMonth() + Number(durationMonths));
     return end.toISOString().slice(0, 10);
-  };
-
-  const addDeliverable = () => {
-    const { name, monthlyCount } = formData.newDeliverable;
-
-    if (!name.trim()) {
-      alert('Please enter a deliverable name');
-      return;
-    }
-
-    if (!monthlyCount || Number(monthlyCount) <= 0) {
-      alert('Please enter a valid monthly count');
-      return;
-    }
-
-    const total = Number(monthlyCount) * Number(formData.duration);
-    const newDeliverable = {
-      name: name.trim(),
-      monthlyCount: Number(monthlyCount),
-      total
-    };
-
-    setFormData({
-      ...formData,
-      deliverables: [...formData.deliverables, newDeliverable],
-      newDeliverable: { name: '', monthlyCount: '' }
-    });
-  };
-
-  const removeDeliverable = (index) => {
-    setFormData({
-      ...formData,
-      deliverables: formData.deliverables.filter((_, i) => i !== index)
-    });
-  };
-
-  const updateDeliverableTotals = (newDuration) => {
-    const updatedDeliverables = formData.deliverables.map(d => ({
-      ...d,
-      total: d.monthlyCount * newDuration
-    }));
-    setFormData({
-      ...formData,
-      duration: newDuration,
-      deliverables: updatedDeliverables
-    });
   };
 
   const openAssignModal = (pkg = null) => {
