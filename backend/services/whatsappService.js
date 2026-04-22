@@ -90,21 +90,39 @@ class WhatsAppService {
         setTimeout(() => this.initialize(retryCount + 1), 15000);
       } else {
         console.error('[WhatsApp] Persistent failure. Attempting Self-Healing (deleting session folder)...');
-        this.clearSession();
+        this.handleCatastrophicFailure();
       }
     }
   }
 
-  clearSession() {
-    const sessionPath = path.join(process.cwd(), '.wwebjs_auth');
-    if (fs.existsSync(sessionPath)) {
-      try {
-        fs.rmSync(sessionPath, { recursive: true, force: true });
-        console.log('✅ [WhatsApp] Session folder cleared. Restarting initialization...');
-        this.initialize(0);
-      } catch (err) {
-        console.error('❌ [WhatsApp] Failed to clear session folder:', err.message);
+  async handleCatastrophicFailure() {
+    try {
+      console.log('[WhatsApp] Shutting down client before cleanup...');
+      await this.client.destroy().catch(() => {}); // Attempt to close browser processes
+      
+      // Wait for OS to release file locks (important on Windows)
+      console.log('[WhatsApp] Waiting for file locks to release (10s)...');
+      await new Promise(resolve => setTimeout(resolve, 10000));
+
+      const sessionPath = path.join(process.cwd(), '.wwebjs_auth');
+      if (fs.existsSync(sessionPath)) {
+        try {
+          fs.rmSync(sessionPath, { recursive: true, force: true });
+          console.log('✅ [WhatsApp] Session folder cleared successfully.');
+        } catch (err) {
+          console.error('❌ [WhatsApp] Failed to clear session folder:', err.message);
+          console.log('👉 Tip: Manually delete the .wwebjs_auth folder if this persists.');
+        }
       }
+
+      console.log('[WhatsApp] Re-initializing from scratch...');
+      // Re-create the client if necessary, or just re-initialize
+      // Note: Re-initializing after destroy() might require a fresh Client instance
+      // For now, we suggest a manual restart if destroy() was called.
+      process.exit(1); // On Render/Local, the process manager (node/nodemon) will restart the server instantly
+    } catch (err) {
+      console.error('[WhatsApp] Critical error during self-healing:', err.message);
+      process.exit(1);
     }
   }
 
